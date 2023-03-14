@@ -5,7 +5,7 @@ function App() {
   const [product, setProduct] = useState([]);
   let [productItems, setProductItems] = useState([]);
   let [searchValue, setSearchValue] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const toggle = () => setIsOpen(!isOpen);
   const tryData = async () => {
     const response = await fetch("https://dummyjson.com/products");
@@ -47,13 +47,16 @@ function App() {
             </button>
             <button
               onClick={toggle}
-              className="text-white bg-blue-700  rounded-lg px-4 py-2 mr-2 mb-2"
+              className="text-white bg-blue-700  rounded-lg px-4 py-2 mr-2 mb-2 relative"
               type="button"
               data-drawer-target="drawer-example"
               data-drawer-show="drawer-example"
               aria-controls="drawer-example"
             >
               Basket
+              <span class="inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full absolute top-0 -top-3  right-0 dark:border-gray-900">
+                {productItems.length}
+              </span>
             </button>
           </label>
         </form>
