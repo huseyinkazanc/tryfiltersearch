@@ -12,6 +12,20 @@ function App() {
     const data = await response.json();
     let dt = data.products;
     setProduct(dt);
+    console.log(dt.thumbnail);
+  };
+  let addTobasket = ({ thumbnail }) => {
+    let existingProduct = productItems.find((p) => p.thumbnail === thumbnail);
+    if (existingProduct) {
+      let updatedProduct = {
+        ...existingProduct,
+        countt: existingProduct.countt + 1,
+      };
+      let otherProducts = productItems.filter((p) => p.thumbnail !== thumbnail);
+      setProductItems([...otherProducts, updatedProduct]);
+    } else {
+      setProductItems([...productItems, { thumbnail, countt: 1 }]);
+    }
   };
 
   let filterItems = product.filter(
@@ -63,13 +77,13 @@ function App() {
         <div className="grid gap-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
           {filterItems
             .slice(0, 15)
-            .map(({ id, title, description, thumbnail }) => (
+            .map(({ id, title, images, description, thumbnail }) => (
               <Card
                 key={id}
                 content={description.slice(0, 15)}
                 title={title.slice(0, 8)}
                 image={thumbnail}
-                onAdd={() => setProductItems([...productItems, { title }])}
+                onAdd={() => addTobasket({ thumbnail, countt: 1 })}
               />
             ))}
         </div>
@@ -80,29 +94,61 @@ function App() {
             <p key={index}>{title}</p>
           ))}
         </div> */}
+
         <div
           style={{
             position: "fixed",
             top: "0px",
             left: "0px",
           }}
-          className={` lg:w-1/5 md:w-1/2 sm:w-full boxDrawer bg-zinc-300 drop-shadow-2xl h-[100vh] ${
+          className={`xl:1/5 lg:w-1/5 md:w-2/5 sm:w-full boxDrawer bg-white drop-shadow-2xl h-[100vh] ${
             isOpen ? "hidden" : ""
           }`}
           tabindex="-1"
           aria-labelledby="drawer-label"
+          autoFocus={isOpen}
         >
           {isOpen ? null : (
             <>
-              <div className="flex justify-around">
-                <span className="inline-block">Your Basket</span>
-                <button className="inline-block font-bold" onClick={toggle}>
-                  X
+              <div className="flex justify-around ">
+                <span className="inline-block font-bold">Your Basket</span>
+                <button
+                  onClick={toggle}
+                  type="button"
+                  className="ml-auto  bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+                  data-dismiss-target="#toast-default"
+                  aria-label="Close"
+                >
+                  <span class="sr-only">Close</span>
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clip-rule="evenodd"
+                    ></path>
+                  </svg>
                 </button>
               </div>
-              {productItems.map(({ title }, index) => (
-                <p key={index}>{title}</p>
-              ))}
+              <div className="">
+                {productItems.map(({ title, thumbnail, countt }, index) => (
+                  <p key={index} className="top-5">
+                    <img
+                      className="inline-block  rounded-full w-[50px] h-[50px] "
+                      src={thumbnail}
+                      alt=""
+                    />
+                    -
+                    <span className="inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-blue-500 border-2 rounded-full dark:border-gray-900">
+                      {countt}
+                    </span>
+                  </p>
+                ))}
+              </div>
             </>
           )}
         </div>
